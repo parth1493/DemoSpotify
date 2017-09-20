@@ -10,9 +10,9 @@ import com.spotify.sdk.android.player.PlayerState;
 public class MainActivity extends AppCompatActivity implements
        PlayerNotificationCallback, ConnectionStateCallback {
     // TODO: Replace with your client ID
-    private static final String CLIENT_ID = "4aa6997f64684e70a5f4576eae90e80f";
+    private final String CLIENT_ID = getString(R.string.CLIENT_ID);
     // TODO: Replace with your redirect URI
-    private static final String REDIRECT_URI = "6f54108baaf643c4885ca0dcc25ccc54";
+    private final String REDIRECT_URI = getString(R.string.REDIRECT_URI);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
