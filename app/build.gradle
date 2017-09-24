@@ -34,5 +34,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
     compile 'com.spotify.sdk:spotify-auth:1.0.0-beta12@aar'
-    compile 'com.spotify.sdk:spotify-player:1.0.0-beta12@aar'
+    compile 'com.spotify.sdk:spotify-player-24-noconnect-2.20b@aar'
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
 }
