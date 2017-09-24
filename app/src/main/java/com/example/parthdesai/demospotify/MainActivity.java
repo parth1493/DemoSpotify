@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.parthdesai.demospotify.model.Person;
@@ -40,9 +41,11 @@ public class MainActivity extends AppCompatActivity implements
     public static String Token=null;
     private ProgressDialog pDialog;
     private Player mPlayer;
+    private TextView user_id;
     private BroadcastReceiver receiver;
     String httpString = "https://api.spotify.com/v1/me";
     private int resumeFlag = 0;
+    Person person = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
                 Log.d("Web api",response);
                 Moshi moshi = new Moshi.Builder().build();
                 JsonAdapter<Person> personAdapter = moshi.adapter(Person.class);
-                Person person = null;
+
                 try{
                     person = personAdapter.fromJson(response);
                     Log.d("User ID",person.getId());
@@ -183,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
             if (pDialog.isShowing()==true){
                 pDialog.dismiss();
                 pDialog.dismiss();
-                setViewList();
+                setView();
             }
             super.onPostExecute(result);
             // Dismiss the progress dialog
@@ -215,7 +218,9 @@ public class MainActivity extends AppCompatActivity implements
             Toast.makeText(getApplicationContext(),"wifi/data Not Connected",Toast.LENGTH_SHORT).show();
         }
     }
-    public void setViewList(){
+    public void setView(){
+        user_id = (TextView)findViewById(R.id.user_id);
+        user_id.setText(person.getId());
     }
     public void loginWithSpotify(){
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
