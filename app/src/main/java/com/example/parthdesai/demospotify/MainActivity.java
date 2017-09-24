@@ -2,7 +2,9 @@ package com.example.parthdesai.demospotify;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import com.example.parthdesai.demospotify.model.Person;
 import com.example.parthdesai.demospotify.utill.ValidationClass;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
@@ -21,6 +24,8 @@ import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
 import com.spotify.sdk.android.player.SpotifyPlayer;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 
@@ -36,17 +41,13 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressDialog pDialog;
     private Player mPlayer;
     private BroadcastReceiver receiver;
-    String httpString = "https://api.spotify.com/v1/users/devpd";
+    String httpString = "https://api.spotify.com/v1/me";
+    private int resumeFlag = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
-                AuthenticationResponse.Type.TOKEN,
-                REDIRECT_URI);
-        builder.setScopes(new String[]{"user-read-private", "streaming"});
-        AuthenticationRequest request = builder.build();
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+
 
     }
 
@@ -64,9 +65,9 @@ public class MainActivity extends AppCompatActivity implements
                 Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
                     @Override
                     public void onInitialized(SpotifyPlayer spotifyPlayer) {
-                        mPlayer = spotifyPlayer;
-                        mPlayer.addConnectionStateCallback(MainActivity.this);
-                        mPlayer.addNotificationCallback(MainActivity.this);
+//                        mPlayer = spotifyPlayer;
+//                        mPlayer.addConnectionStateCallback(MainActivity.this);
+//                        mPlayer.addNotificationCallback(MainActivity.this);
                         new GetData().execute();
                     }
 
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoggedIn() {
         Log.d("MainActivity", "User logged in");
 
-        mPlayer.playUri(null, "spotify:track:2To3PTOTGJUtRsK3nQemP4", 0, 0);
+        //mPlayer.playUri(null, "spotify:track:2To3PTOTGJUtRsK3nQemP4", 0, 0);
     }
 
     @Override
@@ -160,7 +161,15 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 String response = example.run(httpString);
                 Log.d("Web api",response);
+                Moshi moshi = new Moshi.Builder().build();
+                JsonAdapter<Person> personAdapter = moshi.adapter(Person.class);
+                Person person = null;
+                try{
+                    person = personAdapter.fromJson(response);
+                    Log.d("User ID",person.getId());
+                }catch (IOException io){
 
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -185,16 +194,35 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                setStatus();
+            }
+        };
+        this.registerReceiver(receiver, intentFilter);
     }
     public void setStatus() {
 
         if(ValidationClass.checkOnline(getApplicationContext())==true){
             Toast.makeText(getApplicationContext(),"wifi/data Connected",Toast.LENGTH_SHORT).show();
-
+            if(resumeFlag == 0) {
+                resumeFlag = 1;
+            loginWithSpotify();}
         }else{
+            resumeFlag = 0;
             Toast.makeText(getApplicationContext(),"wifi/data Not Connected",Toast.LENGTH_SHORT).show();
         }
     }
     public void setViewList(){
+    }
+    public void loginWithSpotify(){
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
+                AuthenticationResponse.Type.TOKEN,
+                REDIRECT_URI);
+        builder.setScopes(new String[]{"user-read-private", "streaming"});
+        AuthenticationRequest request = builder.build();
+        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
     }
 }
