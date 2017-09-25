@@ -98,8 +98,8 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     }
     @Override
     protected void onResume() {
-        resumeFlag = 0;
         super.onResume();
+        resumeFlag = 0;
         registerReceiver();
     }
     public void registerReceiver() {
@@ -152,7 +152,11 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     public void onPlaybackEvent(PlayerEvent playerEvent) {
         Log.d("MainActivity", "Playback event received: " + playerEvent.name());
         switch (playerEvent) {
-            // Handle event type as necessary
+            case kSpPlaybackNotifyTrackChanged:
+                StartTime = SystemClock.uptimeMillis();
+                handler.postDelayed(runnable, 0);
+                seekBar.setProgress(0);
+                resetSeekbar();
             default:
                 break;
         }
@@ -270,10 +274,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                 playPauseButton.setImageResource(R.drawable.pause);
                 trackNumber = i;
                 Log.d(TAG,tracksList.get(trackNumber).getTrackDetail().getDuration_ms()+"");
-                StartTime = SystemClock.uptimeMillis();
-                handler.postDelayed(runnable, 0);
-                seekBar.setProgress(0);
-                resetSeekbar();
+
             }
         });
         playPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -336,9 +337,12 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             Seconds = Seconds % 60;
 
             MilliSeconds = (int) (UpdateTime % 1000);
-            float percentage = (UpdateTime * 100) / tracksList.get(trackNumber).getTrackDetail().getDuration_ms();
-            seekBar.setProgress((int)percentage);
+            if(tracksList.size() !=0) {
+                float percentage = (UpdateTime * 100) / tracksList.get(trackNumber).getTrackDetail().getDuration_ms();
+                seekBar.setProgress((int) percentage);
+            }
             handler.postDelayed(this, 0);
+
         }
 
     };
