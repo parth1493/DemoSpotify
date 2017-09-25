@@ -8,6 +8,8 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.example.parthdesai.demospotify.Adaptor.TrackListAdaptor;
@@ -58,7 +61,12 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     ImageView previous;
     ImageView next;
     int trackNumber = 0;
+    private SeekBar seekBar;
     private PlaybackState mCurrentPlaybackState;
+    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
+    Handler handler;
+    int Seconds, Minutes, MilliSeconds,duration ;
+
     private final Player.OperationCallback mOperationCallback = new Player.OperationCallback() {
         @Override
         public void onSuccess() {
@@ -85,6 +93,8 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
         listView = (ListView) findViewById(R.id.track_list);
         tracksList = new ArrayList<>();
         playPauseButton = (ImageView)findViewById(R.id.pause_button);
+        seekBar = (SeekBar)findViewById(R.id.seekBar);
+        handler = new Handler() ;
     }
     @Override
     protected void onResume() {
@@ -259,6 +269,11 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                 mPlayer.playUri(mOperationCallback, tracksList.get(i).getTrackDetail().getUri(), 0, 0);
                 playPauseButton.setImageResource(R.drawable.pause);
                 trackNumber = i;
+                Log.d(TAG,tracksList.get(trackNumber).getTrackDetail().getDuration_ms()+"");
+                StartTime = SystemClock.uptimeMillis();
+                handler.postDelayed(runnable, 0);
+                seekBar.setProgress(0);
+
             }
         });
         playPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -279,6 +294,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             @Override
             public void onClick(View view) {
                 if(trackNumber >0) {
+                    Log.d(TAG,tracksList.get(trackNumber).getTrackDetail().getDuration_ms()+"");
                     mPlayer.playUri(mOperationCallback, tracksList.get(--trackNumber).getTrackDetail().getUri(), 0, 0);
                 }
             }
@@ -287,8 +303,9 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             @Override
             public void onClick(View view) {
                 if(tracksList.size()>trackNumber+1) {
-                    Log.d("String",tracksList.size() +"-"+trackNumber);
+                    Log.d(TAG,tracksList.get(trackNumber).getTrackDetail().getDuration_ms()+"");
                     mPlayer.playUri(mOperationCallback, tracksList.get(++trackNumber).getTrackDetail().getUri(), 0, 0);
+
                 }
             }
         });
@@ -299,4 +316,30 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
         Spotify.destroyPlayer(this);
         super.onDestroy();
     }
+    public Runnable runnable = new Runnable() {
+
+        public void run() {
+
+            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
+
+            UpdateTime = TimeBuff + MillisecondTime;
+
+            Seconds = (int) (UpdateTime / 1000);
+
+            Minutes = Seconds / 60;
+
+            Seconds = Seconds % 60;
+
+            MilliSeconds = (int) (UpdateTime % 1000);
+            float percentage = (MillisecondTime * 100) / tracksList.get(trackNumber).getTrackDetail().getDuration_ms();
+
+            seekBar.setProgress((int)percentage);
+//            textView.setText("" + Minutes + ":"
+//                    + String.format("%02d", Seconds) + ":"
+//                    + String.format("%03d", MilliSeconds));
+
+            handler.postDelayed(this, 0);
+        }
+
+    };
 }

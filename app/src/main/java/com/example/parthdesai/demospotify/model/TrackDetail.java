@@ -6,12 +6,21 @@ package com.example.parthdesai.demospotify.model;
 
 public class TrackDetail {
 
+    private long duration_ms;
     private String name;
     private String uri;
 
-    public TrackDetail(String name, String uri) {
+    public TrackDetail(long duration_ms, String name, String uri) {
+        this.duration_ms = duration_ms;
         this.name = name;
         this.uri = uri;
+    }
+    public long getDuration_ms() {
+        return duration_ms;
+    }
+
+    public void setDuration_ms(long duration_ms) {
+        this.duration_ms = duration_ms;
     }
 
     public String getName() {
@@ -29,4 +38,10 @@ public class TrackDetail {
     public void setUri(String uri) {
         this.uri = uri;
     }
+
+
+
+
+
+
 }
