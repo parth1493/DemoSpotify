@@ -12,9 +12,11 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.parthdesai.demospotify.Adaptor.UserPlayList;
+import com.example.parthdesai.demospotify.Adaptor.ItemListAdaptor;
 import com.example.parthdesai.demospotify.model.Items;
 import com.example.parthdesai.demospotify.model.PlayListItem;
 import com.example.parthdesai.demospotify.utill.ValidationClass;
@@ -28,7 +30,7 @@ public class PlayList extends AppCompatActivity {
 
     private String TAG = PlayList.class.getSimpleName();
     private ListView listView;
-    private UserPlayList userPlayListAdaptor;
+    private ItemListAdaptor userPlayListAdaptor;
     private ProgressDialog pDialog;
     private BroadcastReceiver receiver;
     private ArrayList<Items> playListItemList = null;
@@ -142,8 +144,14 @@ public class PlayList extends AppCompatActivity {
         }
     }
     public void setViewList(){
-        userPlayListAdaptor = new UserPlayList(getApplicationContext(),playListItemList);
+        userPlayListAdaptor = new ItemListAdaptor(getApplicationContext(),playListItemList);
         listView.setAdapter(userPlayListAdaptor);
         userPlayListAdaptor.notifyDataSetChanged();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d(TAG,playListItemList.get(i).getName());
+            }
+        });
     }
 }
