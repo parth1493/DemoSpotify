@@ -20,13 +20,7 @@ import com.example.parthdesai.demospotify.utill.ValidationClass;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
-import com.spotify.sdk.android.player.Config;
-import com.spotify.sdk.android.player.ConnectionStateCallback;
-import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Player;
-import com.spotify.sdk.android.player.PlayerEvent;
-import com.spotify.sdk.android.player.Spotify;
-import com.spotify.sdk.android.player.SpotifyPlayer;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
@@ -48,6 +42,8 @@ public class MainActivity extends AppCompatActivity  {
     private int resumeFlag = 0;
     Person person = null;
     Button getUserPlayList;
+    public static int tokenType;
+    AuthenticationResponse response;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,10 +58,11 @@ public class MainActivity extends AppCompatActivity  {
 
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE) {
-            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            response = AuthenticationClient.getResponse(resultCode, intent);
             Token = response.getAccessToken();
-            new GetData().execute();
-
+            if (response.getType() == AuthenticationResponse.Type.TOKEN) {
+                new GetData().execute();
+            }
         }
     }
     @Override

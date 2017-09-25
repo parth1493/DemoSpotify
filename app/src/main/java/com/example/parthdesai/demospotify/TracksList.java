@@ -22,6 +22,8 @@ import com.example.parthdesai.demospotify.model.Track;
 import com.example.parthdesai.demospotify.model.TrackItems;
 import com.example.parthdesai.demospotify.model.TrackDetail;
 import com.example.parthdesai.demospotify.utill.ValidationClass;
+import com.spotify.sdk.android.player.Config;
+import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Error;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
@@ -33,7 +35,8 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class TracksList extends AppCompatActivity implements SpotifyPlayer.NotificationCallback{
+public class TracksList extends AppCompatActivity implements SpotifyPlayer.NotificationCallback,ConnectionStateCallback {
+    private final String CLIENT_ID = "4aa6997f64684e70a5f4576eae90e80f";
     String userID;
     String playListName;
     String playListId;
@@ -90,6 +93,20 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             if(resumeFlag == 0) {
                 resumeFlag = 1;
                 new GetData().execute();
+                Config playerConfig = new Config(this, MainActivity.Token, CLIENT_ID);
+                Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
+                    @Override
+                    public void onInitialized(SpotifyPlayer spotifyPlayer) {
+                        mPlayer = spotifyPlayer;
+                        mPlayer.addConnectionStateCallback(TracksList.this);
+                        mPlayer.addNotificationCallback(TracksList.this);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
+                    }
+                });
             }
         }else{
             resumeFlag = 0;
@@ -99,12 +116,49 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
 
     @Override
     public void onPlaybackEvent(PlayerEvent playerEvent) {
-
+        Log.d("MainActivity", "Playback event received: " + playerEvent.name());
+        switch (playerEvent) {
+            // Handle event type as necessary
+            default:
+                break;
+        }
     }
 
     @Override
     public void onPlaybackError(Error error) {
+        Log.d("MainActivity", "Playback error received: " + error.name());
+        switch (error) {
+            // Handle error type as necessary
+            default:
+                break;
+        }
+    }
 
+    @Override
+    public void onLoggedIn() {
+        Log.d("MainActivity", "User logged in");
+
+
+    }
+
+    @Override
+    public void onLoggedOut() {
+        Log.d("MainActivity", "User logged out");
+    }
+
+    @Override
+    public void onLoginFailed(Error error) {
+        Log.d("MainActivity", "Login failed");
+    }
+
+    @Override
+    public void onTemporaryError() {
+        Log.d("MainActivity", "Temporary error occurred");
+    }
+
+    @Override
+    public void onConnectionMessage(String s) {
+        Log.d("MainActivity", "Received connection message: " + s);
     }
 
 
@@ -176,7 +230,14 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                Log.d(TAG,tracksList.get(i).getTrackDetail().getName());
+                mPlayer.playUri(null, tracksList.get(i).getTrackDetail().getUri(), 0, 0);
             }
         });
+    }
+    @Override
+    protected void onDestroy() {
+        // VERY IMPORTANT! This must always be called or else you will leak resources
+        Spotify.destroyPlayer(this);
+        super.onDestroy();
     }
 }
