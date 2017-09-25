@@ -1,6 +1,7 @@
 package com.example.parthdesai.demospotify.Adaptor;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class TrackListAdaptor extends ArrayAdapter<Track> {
         }
         TextView itemName = (TextView) v.findViewById(R.id.item_name);
         itemName.setText(tracksLists.get(position).getTrackDetail().getName());
+        itemName.setTextColor(Color.BLACK);
         return v;
     }
 }

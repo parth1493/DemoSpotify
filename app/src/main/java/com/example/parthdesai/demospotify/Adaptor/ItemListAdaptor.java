@@ -2,6 +2,7 @@ package com.example.parthdesai.demospotify.Adaptor;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public class ItemListAdaptor extends ArrayAdapter<Items> {
         }
         TextView itemName = (TextView)v.findViewById(R.id.item_name);
         itemName.setText(itemList.get(position).getName());
+        itemName.setTextColor(Color.BLACK);
         return v;
     }
 

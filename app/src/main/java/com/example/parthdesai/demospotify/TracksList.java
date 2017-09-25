@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import com.example.parthdesai.demospotify.utill.ValidationClass;
 import com.spotify.sdk.android.player.Config;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 import com.spotify.sdk.android.player.Error;
+import com.spotify.sdk.android.player.PlaybackState;
 import com.spotify.sdk.android.player.Player;
 import com.spotify.sdk.android.player.PlayerEvent;
 import com.spotify.sdk.android.player.Spotify;
@@ -50,6 +52,20 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     private Player mPlayer;
     private int resumeFlag = 0;
     String httpString =null;
+    Button playPauseButton;
+    private PlaybackState mCurrentPlaybackState;
+    private final Player.OperationCallback mOperationCallback = new Player.OperationCallback() {
+        @Override
+        public void onSuccess() {
+
+        }
+
+        @Override
+        public void onError(Error error) {
+
+        }
+
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +77,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
         playListNameTextView = (TextView)findViewById(R.id.list_name);
         listView = (ListView) findViewById(R.id.track_list);
         tracksList = new ArrayList<>();
+        playPauseButton = (Button)findViewById(R.id.pause_button);
     }
     @Override
     protected void onResume() {
@@ -122,6 +139,8 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             default:
                 break;
         }
+
+        mCurrentPlaybackState = mPlayer.getPlaybackState();
     }
 
     @Override
@@ -230,7 +249,20 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                Log.d(TAG,tracksList.get(i).getTrackDetail().getName());
-                mPlayer.playUri(null, tracksList.get(i).getTrackDetail().getUri(), 0, 0);
+                mPlayer.playUri(mOperationCallback, tracksList.get(i).getTrackDetail().getUri(), 0, 0);
+
+            }
+        });
+        playPauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               // Log.d(TAG,mCurrentPlaybackState.isPlaying+"");
+                if (mCurrentPlaybackState != null && mCurrentPlaybackState.isPlaying) {
+                    mPlayer.pause(mOperationCallback);
+                } else {
+                    mPlayer.resume(mOperationCallback);
+                }
+
             }
         });
     }
