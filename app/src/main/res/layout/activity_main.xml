@@ -7,10 +7,17 @@
     tools:context="com.example.parthdesai.demospotify.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:layout_centerVertical="true"
         android:id="@+id/user_id"/>
-
+    <Button
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/user_id"
+        android:text="Get User Play List"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/get_user_play_list"/>
 </RelativeLayout>

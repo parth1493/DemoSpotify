@@ -9,7 +9,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements
     String httpString = "https://api.spotify.com/v1/me";
     private int resumeFlag = 0;
     Person person = null;
+    Button getUserPlayList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoggedIn() {
         Log.d("MainActivity", "User logged in");
 
-        //mPlayer.playUri(null, "spotify:track:2To3PTOTGJUtRsK3nQemP4", 0, 0);
+//        mPlayer.playUri(null, "spotify:track:5RIVoVdkDLEygELLCniZFr", 0, 0);
     }
 
     @Override
@@ -221,6 +224,15 @@ public class MainActivity extends AppCompatActivity implements
     public void setView(){
         user_id = (TextView)findViewById(R.id.user_id);
         user_id.setText(person.getId());
+        getUserPlayList = (Button)findViewById(R.id.get_user_play_list);
+        getUserPlayList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,PlayList.class);
+                intent.putExtra("USERID",person.getId());
+                startActivity(intent);
+            }
+        });
     }
     public void loginWithSpotify(){
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,

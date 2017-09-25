@@ -2,4 +2,6 @@
     <string name="app_name">DemoSpotify</string>
     <string name="CLIENT_ID">4aa6997f64684e70a5f4576eae90e80f</string>
     <string name="REDIRECT_URI">6f54108baaf643c4885ca0dcc25ccc54</string>
+    <string name="title_activity_play_list">PlayList</string>
+    <string name="VIEW_HOLDER_KEY">VIEW_HOLDER_KEY</string>
 </resources>
