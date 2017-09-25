@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,7 +54,9 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     private Player mPlayer;
     private int resumeFlag = 0;
     String httpString =null;
-    Button playPauseButton;
+    ImageView playPauseButton;
+    ImageView previous;
+    ImageView next;
     private PlaybackState mCurrentPlaybackState;
     private final Player.OperationCallback mOperationCallback = new Player.OperationCallback() {
         @Override
@@ -74,10 +78,12 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
         setSupportActionBar(toolbar);
     }
     private void initXmlView() {
+        previous = (ImageView)findViewById(R.id.previous);
+        next = (ImageView)findViewById(R.id.next);
         playListNameTextView = (TextView)findViewById(R.id.list_name);
         listView = (ListView) findViewById(R.id.track_list);
         tracksList = new ArrayList<>();
-        playPauseButton = (Button)findViewById(R.id.pause_button);
+        playPauseButton = (ImageView)findViewById(R.id.pause_button);
     }
     @Override
     protected void onResume() {
@@ -250,7 +256,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                Log.d(TAG,tracksList.get(i).getTrackDetail().getName());
                 mPlayer.playUri(mOperationCallback, tracksList.get(i).getTrackDetail().getUri(), 0, 0);
-
+                playPauseButton.setImageResource(R.drawable.pause);
             }
         });
         playPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -259,10 +265,24 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                // Log.d(TAG,mCurrentPlaybackState.isPlaying+"");
                 if (mCurrentPlaybackState != null && mCurrentPlaybackState.isPlaying) {
                     mPlayer.pause(mOperationCallback);
+                    playPauseButton.setImageResource(R.drawable.play);
                 } else {
                     mPlayer.resume(mOperationCallback);
+                    playPauseButton.setImageResource(R.drawable.pause);
                 }
 
+            }
+        });
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPlayer.skipToPrevious(mOperationCallback);
+            }
+        });
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPlayer.skipToNext(mOperationCallback);
             }
         });
     }
