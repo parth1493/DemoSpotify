@@ -33,8 +33,7 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 
 
-public class MainActivity extends AppCompatActivity implements
-        SpotifyPlayer.NotificationCallback, ConnectionStateCallback {
+public class MainActivity extends AppCompatActivity  {
     // TODO: Replace with your client ID
     private final String CLIENT_ID = "4aa6997f64684e70a5f4576eae90e80f";
     // TODO: Replace with your redirect URI
@@ -64,80 +63,13 @@ public class MainActivity extends AppCompatActivity implements
         // Check if result comes from the correct activity
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-            Log.d("response",response.getAccessToken());
-            if (response.getType() == AuthenticationResponse.Type.TOKEN) {
-                Config playerConfig = new Config(this, response.getAccessToken(), CLIENT_ID);
-                Token = response.getAccessToken();
-                Spotify.getPlayer(playerConfig, this, new SpotifyPlayer.InitializationObserver() {
-                    @Override
-                    public void onInitialized(SpotifyPlayer spotifyPlayer) {
-//                        mPlayer = spotifyPlayer;
-//                        mPlayer.addConnectionStateCallback(MainActivity.this);
-//                        mPlayer.addNotificationCallback(MainActivity.this);
-                        new GetData().execute();
-                    }
+            Token = response.getAccessToken();
+            new GetData().execute();
 
-                    @Override
-                    public void onError(Throwable throwable) {
-                        Log.e("MainActivity", "Could not initialize player: " + throwable.getMessage());
-                    }
-                });
-            }
-        }
-
-    }
-    @Override
-    public void onLoggedIn() {
-        Log.d("MainActivity", "User logged in");
-
-//        mPlayer.playUri(null, "spotify:track:5RIVoVdkDLEygELLCniZFr", 0, 0);
-    }
-
-    @Override
-    public void onLoggedOut() {
-        Log.d("MainActivity", "User logged out");
-    }
-
-    @Override
-    public void onLoginFailed(Error error) {
-        Log.d("MainActivity", "Login failed");
-    }
-
-
-    @Override
-    public void onTemporaryError() {
-        Log.d("MainActivity", "Temporary error occurred");
-    }
-
-    @Override
-    public void onConnectionMessage(String s) {
-        Log.d("MainActivity", "Received connection message: " + s);
-    }
-
-
-    @Override
-    public void onPlaybackEvent(PlayerEvent playerEvent) {
-        Log.d("MainActivity", "Playback event received: " + playerEvent.name());
-        switch (playerEvent) {
-            // Handle event type as necessary
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onPlaybackError(Error error) {
-        Log.d("MainActivity", "Playback error received: " + error.name());
-        switch (error) {
-            // Handle error type as necessary
-            default:
-                break;
         }
     }
     @Override
     protected void onDestroy() {
-        // VERY IMPORTANT! This must always be called or else you will leak resources
-        Spotify.destroyPlayer(this);
         super.onDestroy();
         this.unregisterReceiver(receiver);
     }

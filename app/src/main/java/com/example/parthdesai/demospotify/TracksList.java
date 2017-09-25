@@ -22,13 +22,18 @@ import com.example.parthdesai.demospotify.model.Track;
 import com.example.parthdesai.demospotify.model.TrackItems;
 import com.example.parthdesai.demospotify.model.TrackDetail;
 import com.example.parthdesai.demospotify.utill.ValidationClass;
+import com.spotify.sdk.android.player.Error;
+import com.spotify.sdk.android.player.Player;
+import com.spotify.sdk.android.player.PlayerEvent;
+import com.spotify.sdk.android.player.Spotify;
+import com.spotify.sdk.android.player.SpotifyPlayer;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class TracksList extends AppCompatActivity {
+public class TracksList extends AppCompatActivity implements SpotifyPlayer.NotificationCallback{
     String userID;
     String playListName;
     String playListId;
@@ -39,6 +44,7 @@ public class TracksList extends AppCompatActivity {
     private ProgressDialog pDialog;
     private BroadcastReceiver receiver;
     private ArrayList<Track> tracksList = null;
+    private Player mPlayer;
     private int resumeFlag = 0;
     String httpString =null;
     @Override
@@ -88,6 +94,16 @@ public class TracksList extends AppCompatActivity {
         }else{
             resumeFlag = 0;
         }
+
+    }
+
+    @Override
+    public void onPlaybackEvent(PlayerEvent playerEvent) {
+
+    }
+
+    @Override
+    public void onPlaybackError(Error error) {
 
     }
 
