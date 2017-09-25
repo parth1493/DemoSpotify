@@ -4,4 +4,5 @@
     <string name="REDIRECT_URI">6f54108baaf643c4885ca0dcc25ccc54</string>
     <string name="title_activity_play_list">PlayList</string>
     <string name="VIEW_HOLDER_KEY">VIEW_HOLDER_KEY</string>
+    <string name="title_activity_tracks_list">TracksList</string>
 </resources>
