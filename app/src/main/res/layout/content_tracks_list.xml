@@ -21,27 +21,27 @@
         android:layout_width="match_parent"
         android:layout_height="100dp">
 
-        <ImageView
-            android:id="@+id/previous"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/pause_button"
-            android:layout_centerInParent="true"
-            android:src="@drawable/previous"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+        <!--<ImageView-->
+            <!--android:id="@+id/previous"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_toLeftOf="@+id/pause_button"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:src="@drawable/previous"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp" />-->
         <ImageView
             android:src="@drawable/play"
             android:layout_centerInParent="true"
             android:id="@+id/pause_button"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
-        <ImageView
-            android:id="@+id/next"
-            android:src="@drawable/skip"
-            android:layout_marginLeft="10dp"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@+id/pause_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+        <!--<ImageView-->
+            <!--android:id="@+id/next"-->
+            <!--android:src="@drawable/skip"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:layout_toRightOf="@+id/pause_button"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="40dp" />-->
     </RelativeLayout>
 </RelativeLayout>

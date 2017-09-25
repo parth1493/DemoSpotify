@@ -55,8 +55,6 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     private int resumeFlag = 0;
     String httpString =null;
     ImageView playPauseButton;
-    ImageView previous;
-    ImageView next;
     private PlaybackState mCurrentPlaybackState;
     private final Player.OperationCallback mOperationCallback = new Player.OperationCallback() {
         @Override
@@ -78,8 +76,6 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
         setSupportActionBar(toolbar);
     }
     private void initXmlView() {
-        previous = (ImageView)findViewById(R.id.previous);
-        next = (ImageView)findViewById(R.id.next);
         playListNameTextView = (TextView)findViewById(R.id.list_name);
         listView = (ListView) findViewById(R.id.track_list);
         tracksList = new ArrayList<>();
@@ -273,18 +269,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
 
             }
         });
-        previous.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPlayer.skipToPrevious(mOperationCallback);
-            }
-        });
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPlayer.skipToNext(mOperationCallback);
-            }
-        });
+
     }
     @Override
     protected void onDestroy() {
