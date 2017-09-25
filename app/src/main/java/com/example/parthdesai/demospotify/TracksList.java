@@ -55,6 +55,9 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
     private int resumeFlag = 0;
     String httpString =null;
     ImageView playPauseButton;
+    ImageView previous;
+    ImageView next;
+    int trackNumber = 0;
     private PlaybackState mCurrentPlaybackState;
     private final Player.OperationCallback mOperationCallback = new Player.OperationCallback() {
         @Override
@@ -76,6 +79,8 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
         setSupportActionBar(toolbar);
     }
     private void initXmlView() {
+        previous = (ImageView)findViewById(R.id.previous);
+        next = (ImageView)findViewById(R.id.next);
         playListNameTextView = (TextView)findViewById(R.id.list_name);
         listView = (ListView) findViewById(R.id.track_list);
         tracksList = new ArrayList<>();
@@ -253,6 +258,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                Log.d(TAG,tracksList.get(i).getTrackDetail().getName());
                 mPlayer.playUri(mOperationCallback, tracksList.get(i).getTrackDetail().getUri(), 0, 0);
                 playPauseButton.setImageResource(R.drawable.pause);
+                trackNumber = i;
             }
         });
         playPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -269,7 +275,23 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
 
             }
         });
-
+        previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(trackNumber >0) {
+                    mPlayer.playUri(mOperationCallback, tracksList.get(--trackNumber).getTrackDetail().getUri(), 0, 0);
+                }
+            }
+        });
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(tracksList.size()>trackNumber+1) {
+                    Log.d("String",tracksList.size() +"-"+trackNumber);
+                    mPlayer.playUri(mOperationCallback, tracksList.get(++trackNumber).getTrackDetail().getUri(), 0, 0);
+                }
+            }
+        });
     }
     @Override
     protected void onDestroy() {
