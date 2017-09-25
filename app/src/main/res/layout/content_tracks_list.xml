@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_tracks_list">
 
     <ListView
-        android:id="@+id/play_list"
+        android:id="@+id/track_list"
         android:divider="@android:color/transparent"
         android:dividerHeight="10.0sp"
         android:layout_width="match_parent"
