@@ -273,7 +273,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 seekBar.setProgress(0);
-
+                resetSeekbar();
             }
         });
         playPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -283,7 +283,11 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                 if (mCurrentPlaybackState != null && mCurrentPlaybackState.isPlaying) {
                     mPlayer.pause(mOperationCallback);
                     playPauseButton.setImageResource(R.drawable.play);
+                    TimeBuff += MillisecondTime;
+                    handler.removeCallbacks(runnable);
                 } else {
+                    StartTime = SystemClock.uptimeMillis();
+                    handler.postDelayed(runnable, 0);
                     mPlayer.resume(mOperationCallback);
                     playPauseButton.setImageResource(R.drawable.pause);
                 }
@@ -296,6 +300,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                 if(trackNumber >0) {
                     Log.d(TAG,tracksList.get(trackNumber).getTrackDetail().getDuration_ms()+"");
                     mPlayer.playUri(mOperationCallback, tracksList.get(--trackNumber).getTrackDetail().getUri(), 0, 0);
+                    resetSeekbar();
                 }
             }
         });
@@ -305,7 +310,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                 if(tracksList.size()>trackNumber+1) {
                     Log.d(TAG,tracksList.get(trackNumber).getTrackDetail().getDuration_ms()+"");
                     mPlayer.playUri(mOperationCallback, tracksList.get(++trackNumber).getTrackDetail().getUri(), 0, 0);
-
+                    resetSeekbar();
                 }
             }
         });
@@ -331,15 +336,21 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
             Seconds = Seconds % 60;
 
             MilliSeconds = (int) (UpdateTime % 1000);
-            float percentage = (MillisecondTime * 100) / tracksList.get(trackNumber).getTrackDetail().getDuration_ms();
-
+            float percentage = (UpdateTime * 100) / tracksList.get(trackNumber).getTrackDetail().getDuration_ms();
             seekBar.setProgress((int)percentage);
-//            textView.setText("" + Minutes + ":"
-//                    + String.format("%02d", Seconds) + ":"
-//                    + String.format("%03d", MilliSeconds));
-
             handler.postDelayed(this, 0);
         }
 
     };
+    public void resetSeekbar(){
+        MillisecondTime = 0L ;
+        StartTime = 0L ;
+        TimeBuff = 0L ;
+        UpdateTime = 0L ;
+        Seconds = 0 ;
+        Minutes = 0 ;
+        MilliSeconds = 0 ;
+        StartTime = SystemClock.uptimeMillis();
+        handler.postDelayed(runnable, 0);
+    }
 }
