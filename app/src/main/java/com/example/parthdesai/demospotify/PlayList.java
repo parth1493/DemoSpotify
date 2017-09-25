@@ -121,7 +121,7 @@ public class PlayList extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 Log.d(TAG, "doInBackground() called with: " + "params = [" + playlistItemAdapter.toJson(playlistitem) + "]");
-
+                playListItemList.clear();
                 for(Items p:playlistitem.getItems()){
                     playListItemList.add(p);
                 }

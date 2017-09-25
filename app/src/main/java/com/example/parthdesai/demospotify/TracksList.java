@@ -198,7 +198,7 @@ public class TracksList extends AppCompatActivity implements SpotifyPlayer.Notif
                     e.printStackTrace();
                 }
                 Log.d(TAG, "doInBackground() called with: " + "params = [" + tracklistAdapter.toJson(trackItems) + "]");
-
+                tracksList.clear();
                 for(Track t: trackItems.getItems()){
                     tracksList.add(t);
                 }
